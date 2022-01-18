@@ -3,6 +3,7 @@ FROM rust:1.58 as builder
 RUN USER=root cargo new --bin chiselstore
 WORKDIR ./chiselstore
 COPY ./Cargo.toml ./Cargo.toml
+RUN rustup component add rustfmt
 RUN cargo build --release
 RUN rm src/*.rs
 
