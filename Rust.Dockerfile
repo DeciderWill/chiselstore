@@ -33,7 +33,7 @@ RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
 
-COPY --from=builder /rust-docker-web/target/release/chiselstore ${APP}/chiselstore
+COPY --from=builder /chiselstore/target/release/chiselstore ${APP}/chiselstore
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
