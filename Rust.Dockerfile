@@ -5,9 +5,10 @@ WORKDIR ./chiselstore
 COPY ./Cargo.toml ./Cargo.toml
 RUN rustup component add rustfmt
 RUN cargo build --release
+RUN ls
 RUN rm src/*.rs
 
-ADD . ./
+COPY . ./
 
 RUN rm ./target/release/deps/chiselstore*
 RUN cargo build --release
