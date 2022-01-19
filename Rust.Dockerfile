@@ -2,7 +2,6 @@ FROM ekidd/rust-musl-builder:stable as builder
 
 RUN USER=root cargo new --bin chiselstore
 WORKDIR ./chiselstore
-COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build --release
 RUN rm src/*.rs
