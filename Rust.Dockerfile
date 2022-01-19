@@ -1,40 +1,32 @@
-FROM rust:1.58 as builder
+FROM ekidd/rust-musl-builder:stable as builder
 
 RUN USER=root cargo new --bin chiselstore
 WORKDIR ./chiselstore
+COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
-RUN rustup component add rustfmt
 RUN cargo build --release
-RUN ls
 RUN rm src/*.rs
 
-COPY . ./
+ADD . ./
 
-RUN rm ./target/release/deps/chiselstore*
+RUN rm ./target/x86_64-unknown-linux-musl/release/deps/chiselstore*
 RUN cargo build --release
 
 
-FROM debian:buster-slim
-ARG APP=/usr/src/app
+FROM alpine:latest
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates tzdata \
-    && rm -rf /var/lib/apt/lists/*
+ARG APP=/usr/src/app
 
 EXPOSE 50000
 EXPOSE 50001
-EXPOSE 50002
-EXPOSE 50003
-EXPOSE 50004
 
 ENV TZ=Etc/UTC \
     APP_USER=appuser
 
-RUN groupadd $APP_USER \
-    && useradd -g $APP_USER $APP_USER \
-    && mkdir -p ${APP}
+RUN addgroup -S $APP_USER \
+    && adduser -S -g $APP_USER $APP_USER
 
-COPY --from=builder /chiselstore/target/release/chiselstore ${APP}/chiselstore
+COPY --from=builder /home/rust/src/chiselstore/target/x86_64-unknown-linux-musl/release/chiselstore ${APP}/chiselstore
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 
