@@ -4,9 +4,12 @@ RUN USER=root cargo new --bin chiselstore
 WORKDIR ./chiselstore
 COPY ./Cargo.toml ./Cargo.toml
 RUN cargo build --release
+RUN ls src/
 RUN rm src/*.rs
+RUN echo "after"
+RUN ls src/
 
-ADD . ./
+COPY . .
 
 RUN rm ./target/x86_64-unknown-linux-musl/release/deps/chiselstore*
 RUN cargo build --release
